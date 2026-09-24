@@ -8,7 +8,6 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
   build-and-test:
@@ -38,6 +37,7 @@ jobs:
         run: |
           cd worker
           npm ci || npm install
+          npx prisma generate
           npm run build
 
       - name: Build Frontend
@@ -50,6 +50,9 @@ jobs:
     needs: build-and-test
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -64,23 +67,27 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Set Lowercase Repository Name
+        run: |
+          echo "REPO_LOWER=$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
       - name: Build and push Backend Image
         uses: docker/build-push-action@v5
         with:
           context: ./backend
           push: true
-          tags: ${{ env.REGISTRY }}/${{ github.repository }}/backend:latest
+          tags: ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/backend:latest
 
       - name: Build and push Worker Image
         uses: docker/build-push-action@v5
         with:
           context: ./worker
           push: true
-          tags: ${{ env.REGISTRY }}/${{ github.repository }}/worker:latest
+          tags: ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/worker:latest
 
       - name: Build and push Frontend Image
         uses: docker/build-push-action@v5
         with:
           context: ./frontend
           push: true
-          tags: ${{ env.REGISTRY }}/${{ github.repository }}/frontend:latest
+          tags: ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/frontend:latest

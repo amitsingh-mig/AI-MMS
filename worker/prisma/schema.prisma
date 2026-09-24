@@ -1,0 +1,124 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  extensions = [vector]
+}
+
+enum Role {
+  ADMIN
+  MANAGER
+  USER
+}
+
+enum ProcessingStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+enum MediaType {
+  IMAGE
+  VIDEO
+}
+
+model User {
+  id           String       @id @default(uuid())
+  email        String       @unique
+  name         String
+  passwordHash String
+  role         Role         @default(USER)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  auditLogs    AuditLog[]
+  mediaAssets  MediaAsset[]
+
+  @@map("users")
+}
+
+model Album {
+  id          String       @id @default(uuid())
+  name        String
+  description String?
+  country     String?      // e.g. "India"
+  year        Int?         // e.g. 2025, 2026
+  city        String?      // e.g. "Delhi", "Agra"
+  event       String?      // e.g. "Conference", "Exhibition"
+  festival    String?      // e.g. "Diwali", "Holi"
+  keywords    String[]     @default([])
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  mediaAssets MediaAsset[]
+
+  @@map("albums")
+}
+
+model MediaAsset {
+  id               String           @id @default(uuid())
+  title            String
+  originalFileName String
+  fileType         MediaType
+  mimeType         String
+  fileSizeBytes    BigInt
+  s3Key            String           @unique
+  s3Bucket         String
+  width            Int?
+  height           Int?
+  durationSeconds  Float?
+  
+  albumId          String?
+  album            Album?           @relation(fields: [albumId], references: [id], onDelete: SetNull)
+  
+  // Taxonomical Fields
+  country          String?
+  year             Int?
+  city             String?
+  event            String?
+  festival         String?
+  customKeywords   String[]         @default([])
+
+  // AI Scanning Results
+  aiDescription    String?
+  aiKeywords       String[]         @default([])
+  ocrText          String?
+  detectedObjects  Json?
+  detectedLandmarks Json?
+
+  // pgvector vector embedding (384 dimensions)
+  embedding        Unsupported("vector(384)")?
+
+  thumbnailS3Key   String?
+  previewS3Key     String?
+
+  processingStatus ProcessingStatus @default(PENDING)
+  processingError  String?
+
+  uploadedById     String
+  uploadedBy       User             @relation(fields: [uploadedById], references: [id])
+
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+
+  auditLogs        AuditLog[]
+
+  @@map("media_assets")
+}
+
+model AuditLog {
+  id        String      @id @default(uuid())
+  userId    String?
+  user      User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+  action    String      // e.g. UPLOAD, DOWNLOAD, DELETE, AI_RESCAN, USER_ROLE_CHANGE
+  details   Json?
+  ipAddress String?
+  mediaId   String?
+  media     MediaAsset? @relation(fields: [mediaId], references: [id], onDelete: SetNull)
+  createdAt DateTime    @default(now())
+
+  @@map("audit_logs")
+}
