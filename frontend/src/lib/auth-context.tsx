@@ -10,7 +10,6 @@ interface AuthContextType {
   login: (email: string, pass: string) => Promise<void>;
   register: (name: string, email: string, pass: string, role?: string) => Promise<void>;
   logout: () => void;
-  switchRoleQuickly: (role: 'ADMIN' | 'MANAGER' | 'USER') => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -51,20 +50,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(res.data.user);
   };
 
-  const switchRoleQuickly = async (role: 'ADMIN' | 'MANAGER' | 'USER') => {
-    const emailMap = {
-      ADMIN: 'admin@aimms.com',
-      MANAGER: 'manager@aimms.com',
-      USER: 'user@aimms.com',
-    };
-    const passMap = {
-      ADMIN: 'Admin@123',
-      MANAGER: 'Manager@123',
-      USER: 'User@123',
-    };
-    await login(emailMap[role], passMap[role]);
-  };
-
   const logout = () => {
     localStorage.removeItem('aimms_token');
     setToken(null);
@@ -80,7 +65,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         login,
         register,
         logout,
-        switchRoleQuickly,
       }}
     >
       {children}

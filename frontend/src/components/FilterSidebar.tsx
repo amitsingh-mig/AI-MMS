@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Filter, RotateCcw, MapPin, Calendar, Tag, Video, Image as ImageIcon, Sparkles } from 'lucide-react';
+import { Filter, RotateCcw, MapPin, Calendar, Tag, Image as ImageIcon, ChevronDown } from 'lucide-react';
 
 export interface FilterState {
   country: string;
@@ -25,15 +25,17 @@ export default function FilterSidebar({ filters, setFilters, onReset }: FilterSi
   };
 
   return (
-    <aside className="w-full lg:w-72 glass-panel rounded-2xl p-5 border border-gray-800 space-y-6 shrink-0">
-      <div className="flex items-center justify-between border-b border-gray-800 pb-3">
-        <div className="flex items-center space-x-2 text-indigo-400 font-bold text-sm tracking-wide">
-          <Filter className="w-4 h-4" />
+    <aside className="w-full lg:w-72 bg-white rounded-2xl p-5 border border-gray-200 shadow-sm space-y-5 shrink-0">
+      <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+        <div className="flex items-center space-x-2 text-slate-900 font-extrabold text-sm tracking-tight">
+          <div className="w-6 h-6 rounded-lg bg-[#FFD600] flex items-center justify-center shrink-0">
+            <Filter className="w-3.5 h-3.5 text-slate-950" />
+          </div>
           <span>Structured Metadata Filters</span>
         </div>
         <button
           onClick={onReset}
-          className="text-xs text-gray-400 hover:text-indigo-300 flex items-center space-x-1 transition"
+          className="text-xs font-semibold text-slate-500 hover:text-slate-900 flex items-center space-x-1 transition"
         >
           <RotateCcw className="w-3 h-3" />
           <span>Reset</span>
@@ -42,132 +44,105 @@ export default function FilterSidebar({ filters, setFilters, onReset }: FilterSi
 
       {/* Country Filter */}
       <div className="space-y-1.5">
-        <label className="text-xs font-semibold text-gray-300 flex items-center space-x-1.5">
-          <MapPin className="w-3.5 h-3.5 text-indigo-400" />
+        <label className="text-xs font-bold text-slate-700 flex items-center space-x-1.5">
+          <MapPin className="w-3.5 h-3.5 text-amber-500" />
           <span>Country</span>
         </label>
-        <select
-          value={filters.country}
-          onChange={(e) => handleChange('country', e.target.value)}
-          className="w-full bg-gray-900/80 border border-gray-800 rounded-xl px-3 py-2 text-xs font-medium text-gray-200 focus:outline-none focus:border-indigo-500 transition"
-        >
-          <option value="">All Countries</option>
-          <option value="India">India</option>
-        </select>
+        <div className="relative">
+          <select
+            value={filters.country}
+            onChange={(e) => handleChange('country', e.target.value)}
+            className="w-full bg-slate-50 border border-gray-200 rounded-xl px-3.5 py-2 text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 appearance-none cursor-pointer"
+          >
+            <option value="">All Countries</option>
+            <option value="India">India</option>
+          </select>
+          <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-3 top-2.5 pointer-events-none" />
+        </div>
       </div>
 
       {/* Year Filter */}
       <div className="space-y-1.5">
-        <label className="text-xs font-semibold text-gray-300 flex items-center space-x-1.5">
-          <Calendar className="w-3.5 h-3.5 text-indigo-400" />
+        <label className="text-xs font-bold text-slate-700 flex items-center space-x-1.5">
+          <Calendar className="w-3.5 h-3.5 text-amber-500" />
           <span>Year</span>
         </label>
-        <select
-          value={filters.year}
-          onChange={(e) => handleChange('year', e.target.value)}
-          className="w-full bg-gray-900/80 border border-gray-800 rounded-xl px-3 py-2 text-xs font-medium text-gray-200 focus:outline-none focus:border-indigo-500 transition"
-        >
-          <option value="">All Years</option>
-          <option value="2026">2026</option>
-          <option value="2025">2025</option>
-        </select>
+        <div className="relative">
+          <select
+            value={filters.year}
+            onChange={(e) => handleChange('year', e.target.value)}
+            className="w-full bg-slate-50 border border-gray-200 rounded-xl px-3.5 py-2 text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 appearance-none cursor-pointer"
+          >
+            <option value="">All Years</option>
+            <option value="2026">2026</option>
+            <option value="2025">2025</option>
+          </select>
+          <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-3 top-2.5 pointer-events-none" />
+        </div>
       </div>
 
       {/* City Filter */}
       <div className="space-y-1.5">
-        <label className="text-xs font-semibold text-gray-300 flex items-center space-x-1.5">
-          <MapPin className="w-3.5 h-3.5 text-purple-400" />
+        <label className="text-xs font-bold text-slate-700 flex items-center space-x-1.5">
+          <MapPin className="w-3.5 h-3.5 text-amber-500" />
           <span>City</span>
         </label>
-        <select
-          value={filters.city}
-          onChange={(e) => handleChange('city', e.target.value)}
-          className="w-full bg-gray-900/80 border border-gray-800 rounded-xl px-3 py-2 text-xs font-medium text-gray-200 focus:outline-none focus:border-indigo-500 transition"
-        >
-          <option value="">All Cities</option>
-          <option value="Delhi">Delhi</option>
-          <option value="Agra">Agra</option>
-          <option value="Mumbai">Mumbai</option>
-          <option value="Jaipur">Jaipur</option>
-        </select>
+        <div className="relative">
+          <select
+            value={filters.city}
+            onChange={(e) => handleChange('city', e.target.value)}
+            className="w-full bg-slate-50 border border-gray-200 rounded-xl px-3.5 py-2 text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 appearance-none cursor-pointer"
+          >
+            <option value="">All Cities</option>
+            <option value="Delhi">Delhi</option>
+            <option value="Agra">Agra</option>
+            <option value="Mumbai">Mumbai</option>
+            <option value="Jaipur">Jaipur</option>
+          </select>
+          <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-3 top-2.5 pointer-events-none" />
+        </div>
       </div>
 
       {/* Event / Festival Filter */}
       <div className="space-y-1.5">
-        <label className="text-xs font-semibold text-gray-300 flex items-center space-x-1.5">
-          <Tag className="w-3.5 h-3.5 text-pink-400" />
+        <label className="text-xs font-bold text-slate-700 flex items-center space-x-1.5">
+          <Tag className="w-3.5 h-3.5 text-amber-500" />
           <span>Event / Festival</span>
         </label>
-        <select
-          value={filters.festival}
-          onChange={(e) => handleChange('festival', e.target.value)}
-          className="w-full bg-gray-900/80 border border-gray-800 rounded-xl px-3 py-2 text-xs font-medium text-gray-200 focus:outline-none focus:border-indigo-500 transition"
-        >
-          <option value="">All Events & Festivals</option>
-          <option value="Festival">Festival</option>
-          <option value="Diwali">Diwali</option>
-          <option value="Holi">Holi</option>
-          <option value="Conference">Conference</option>
-          <option value="Exhibition">Exhibition</option>
-        </select>
-      </div>
-
-      {/* Media Type Filter */}
-      <div className="space-y-1.5">
-        <label className="text-xs font-semibold text-gray-300 flex items-center space-x-1.5">
-          <ImageIcon className="w-3.5 h-3.5 text-emerald-400" />
-          <span>Media Asset Type</span>
-        </label>
-        <div className="grid grid-cols-3 gap-1.5 p-1 bg-gray-900/90 rounded-xl border border-gray-800 text-xs">
-          <button
-            onClick={() => handleChange('mediaType', '')}
-            className={`py-1.5 rounded-lg font-medium transition ${
-              !filters.mediaType ? 'bg-indigo-600 text-white shadow' : 'text-gray-400 hover:text-gray-200'
-            }`}
+        <div className="relative">
+          <select
+            value={filters.festival}
+            onChange={(e) => handleChange('festival', e.target.value)}
+            className="w-full bg-slate-50 border border-gray-200 rounded-xl px-3.5 py-2 text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 appearance-none cursor-pointer"
           >
-            All
-          </button>
-          <button
-            onClick={() => handleChange('mediaType', 'IMAGE')}
-            className={`py-1.5 rounded-lg font-medium transition flex items-center justify-center space-x-1 ${
-              filters.mediaType === 'IMAGE' ? 'bg-indigo-600 text-white shadow' : 'text-gray-400 hover:text-gray-200'
-            }`}
-          >
-            <ImageIcon className="w-3 h-3" />
-            <span>Image</span>
-          </button>
-          <button
-            onClick={() => handleChange('mediaType', 'VIDEO')}
-            className={`py-1.5 rounded-lg font-medium transition flex items-center justify-center space-x-1 ${
-              filters.mediaType === 'VIDEO' ? 'bg-indigo-600 text-white shadow' : 'text-gray-400 hover:text-gray-200'
-            }`}
-          >
-            <Video className="w-3 h-3" />
-            <span>Video</span>
-          </button>
+            <option value="">All Events & Festivals</option>
+            <option value="Festival">Festival</option>
+            <option value="Diwali">Diwali</option>
+            <option value="Holi">Holi</option>
+            <option value="Conference">Conference</option>
+            <option value="Exhibition">Exhibition</option>
+          </select>
+          <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-3 top-2.5 pointer-events-none" />
         </div>
       </div>
 
-      {/* Quick AI Keyword Tags */}
-      <div className="space-y-2 pt-2 border-t border-gray-800">
-        <label className="text-xs font-semibold text-gray-300 flex items-center space-x-1.5">
-          <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
-          <span>Popular AI Keywords</span>
+      {/* Media Asset Type Filter */}
+      <div className="space-y-1.5">
+        <label className="text-xs font-bold text-slate-700 flex items-center space-x-1.5">
+          <ImageIcon className="w-3.5 h-3.5 text-amber-500" />
+          <span>Media Asset Type</span>
         </label>
-        <div className="flex flex-wrap gap-1.5">
-          {['Crowd', 'Stage', 'Diwali', 'Monument', 'Lights', 'Architecture', 'Taj Mahal'].map((kw) => (
-            <button
-              key={kw}
-              onClick={() => handleChange('keyword', filters.keyword === kw ? '' : kw)}
-              className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition ${
-                filters.keyword === kw
-                  ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 shadow-glow'
-                  : 'bg-gray-800/60 text-gray-400 hover:bg-gray-700 hover:text-gray-200 border border-gray-800'
-              }`}
-            >
-              #{kw}
-            </button>
-          ))}
+        <div className="relative">
+          <select
+            value={filters.mediaType}
+            onChange={(e) => handleChange('mediaType', e.target.value)}
+            className="w-full bg-slate-50 border border-gray-200 rounded-xl px-3.5 py-2 text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 appearance-none cursor-pointer"
+          >
+            <option value="">All Types</option>
+            <option value="IMAGE">Image</option>
+            <option value="VIDEO">Video</option>
+          </select>
+          <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-3 top-2.5 pointer-events-none" />
         </div>
       </div>
     </aside>
