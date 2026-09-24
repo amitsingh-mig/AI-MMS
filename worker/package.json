@@ -1,0 +1,31 @@
+{
+  "name": "ai-mms-worker",
+  "version": "1.0.0",
+  "description": "AI Media Management System BullMQ Worker Service",
+  "main": "dist/main.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/main.js",
+    "dev": "ts-node src/main.ts"
+  },
+  "dependencies": {
+    "@aws-sdk/client-bedrock-runtime": "^3.750.0",
+    "@aws-sdk/client-rekognition": "^3.750.0",
+    "@aws-sdk/client-s3": "^3.750.0",
+    "@prisma/client": "^5.22.0",
+    "bullmq": "^5.41.0",
+    "dotenv": "^16.4.7",
+    "fluent-ffmpeg": "^2.1.3",
+    "ioredis": "^5.5.0",
+    "pg": "^8.13.3",
+    "sharp": "^0.33.5"
+  },
+  "devDependencies": {
+    "@types/fluent-ffmpeg": "^2.1.27",
+    "@types/node": "^22.10.0",
+    "@types/sharp": "^0.31.1",
+    "prisma": "^5.22.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2"
+  }
+}
