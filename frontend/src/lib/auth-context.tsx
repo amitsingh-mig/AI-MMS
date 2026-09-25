@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import api, { User } from './api';
 
-interface AuthContextType {
+export interface AuthContextType {
   user: User | null;
   token: string | null;
   loading: boolean;
@@ -20,38 +20,52 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const savedUser = localStorage.getItem('aimms_user');
     const savedToken = localStorage.getItem('aimms_token');
-    if (savedToken) {
-      setToken(savedToken);
-      api
-        .get('/auth/me')
-        .then((res) => setUser(res.data))
-        .catch(() => {
-          localStorage.removeItem('aimms_token');
-          setToken(null);
-        })
-        .finally(() => setLoading(false));
+
+    if (savedToken && savedUser && savedUser !== 'undefined' && savedUser.trim() !== '') {
+      try {
+        const parsedUser = JSON.parse(savedUser);
+        setUser(parsedUser);
+        setToken(savedToken);
+      } catch {
+        localStorage.removeItem('aimms_token');
+        localStorage.removeItem('aimms_user');
+        setUser(null);
+        setToken(null);
+      }
     } else {
-      setLoading(false);
+      setUser(null);
+      setToken(null);
     }
+    setLoading(false);
   }, []);
 
   const login = async (email: string, pass: string) => {
     const res = await api.post('/auth/login', { email, pass });
-    localStorage.setItem('aimms_token', res.data.accessToken);
-    setToken(res.data.accessToken);
-    setUser(res.data.user);
+    const { accessToken, user: authenticatedUser } = res.data;
+
+    localStorage.setItem('aimms_token', accessToken);
+    localStorage.setItem('aimms_user', JSON.stringify(authenticatedUser));
+
+    setToken(accessToken);
+    setUser(authenticatedUser);
   };
 
   const register = async (name: string, email: string, pass: string, role?: string) => {
     const res = await api.post('/auth/register', { name, email, pass, role });
-    localStorage.setItem('aimms_token', res.data.accessToken);
-    setToken(res.data.accessToken);
-    setUser(res.data.user);
+    const { accessToken, user: registeredUser } = res.data;
+
+    localStorage.setItem('aimms_token', accessToken);
+    localStorage.setItem('aimms_user', JSON.stringify(registeredUser));
+
+    setToken(accessToken);
+    setUser(registeredUser);
   };
 
   const logout = () => {
     localStorage.removeItem('aimms_token');
+    localStorage.removeItem('aimms_user');
     setToken(null);
     setUser(null);
   };

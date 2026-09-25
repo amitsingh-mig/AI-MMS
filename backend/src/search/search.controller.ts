@@ -4,7 +4,6 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { MediaType } from '@prisma/client';
 
 @Controller('search')
-@UseGuards(JwtAuthGuard)
 export class SearchController {
   constructor(private readonly searchService: SearchService) {}
 

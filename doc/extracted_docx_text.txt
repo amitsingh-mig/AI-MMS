@@ -1,0 +1,301 @@
+
+AI-
+MMS ‘PIX AI’
+1. Project Overview
+The proposed system is a centralized AI-powered Digital Asset Management (DAM) platform for storing, organizing, searching, and securely distributing 
+approximately 5–20 TB of images, photographs, and videos. AWS S3 will be used as the primary object storage layer, while the application database, cache, search index, AI metadata, and permissions will be managed separately so that users do not need to int
+eract directly with AWS.
+2. Core Goals
+Centralize 5–20 TB of image and video assets.
+Provide fast search without repeatedly scanning AWS S3.
+Use AI to automatically analyze uploaded media.
+Support natural-language and metadata-based media search.
+Provide r
+ole-based access for Admin, Manager, and User.
+Reduce unnecessary AWS API calls and improve application performance.
+Deliver thumbnails and previews efficiently through caching/CDN.
+Maintain secure downloads using authorization and signed URLs.
+3. User Rol
+es &amp; Permissions
+Admin
+Full system access
+Upload, download, delete, and manage all media
+Add, edit, disable, and manage users/managers
+Manage albums, folders, permissions, and access
+Run and monitor AI processing
+View storage and activity information
+Manag
+er
+Upload media
+Download media
+Search and browse assigned media
+Manage assigned albums/media where permission is granted
+User
+Search and browse authorized media
+View previews
+Download authorized media
+No upload or delete permission
+4. Recommended 
+Architecture
+The recommended architecture separates storage, application metadata, search, caching, AI processing, and media delivery.
+Users: 
+Web application / dashboard
+Frontend: 
+React + Vite
+API &amp; Authentication: 
+Node.js + Express (Laravel/PHP is also po
+ssible)
+Primary Database: 
+PostgreSQL or MongoDB for media metadata, users, permissions, and logs
+Cache: 
+Redis
+Search: 
+OpenSearch with vector search for AI/natural-language search
+Queue: 
+AWS SQS for asynchronous media/AI processing
+AI: 
+AWS Rekognition and A
+WS Bedrock
+Object Storage: 
+AWS S3 for original media
+CDN: 
+Amazon CloudFront for efficient media delivery
+5. High-Level Data Flow
+User → React Web App → API/Auth Server → Redis / Database / Search → S3 / CloudFront
+For uploads: Browser → API requests a 
+secure upload URL → Browser uploads directly to S3 → S3 event → SQS → AI worker → Rekognition/Bedrock → Database + Search Index.
+6. Upload Architecture
+Large files should not be uploaded through the application server. The API should generate a pre-signed 
+S3 upload URL and allow the browser to upload directly to S3. This reduces server load and is suitable for large videos and batches of images.
+User selects media.
+API validates user, file type, size, and destination permissions.
+API generates a pre-signed 
+S3 upload URL.
+Browser uploads directly to S3.
+S3 confirms the upload.
+S3 event places a processing job in SQS.
+AI worker processes the media asynchronously.
+Metadata and AI results are stored in the database/search index.
+7. AI Media Scanning
+AI 
+processing should happen primarily when new media is uploaded or when an administrator explicitly requests a re-scan. Search requests should use stored metadata and indexes rather than scanning the original files repeatedly.
+Object and scene detection
+Face
+ detection/recognition where legally and operationally appropriate
+OCR / text extraction
+Automatic captions and descriptions
+Keyword and category generation
+Video frame analysis
+Speech-to-text for video where required
+Vector embeddings for semantic search
+8. AI Search Example
+Example query: "Delhi event photos with a stage and people in 2026."
+The application interprets the query and searches stored metadata, AI tags, OCR text, and vector embeddings. Matching media IDs are returned. The system then creates 
+authorized preview or download URLs without performing a full S3 scan.
+9. Thumbnail &amp; Preview Strategy
+Original file: stored in S3.
+Thumbnail: generated for gallery/list views.
+Medium preview: used for detailed viewing.
+Original: accessed only when the use
+r opens/downloads the full-resolution asset.
+Frequently viewed content: cached and delivered through CloudFront.
+10. Search Without Repeated S3 Scanning
+S3 should remain the source of truth for original files, but it should not be treated as the primary se
+arch database. The system should store file metadata and AI information in the database/search layer.
+Requirement
+Recommended Layer
+Purpose
+Original media
+AWS S3
+Durable object storage
+Metadata
+PostgreSQL/MongoDB
+Fast application queries
+AI/natural 
+search
+OpenSearch
+Text + vector search
+Frequent data
+Redis
+Low-latency caching
+Media delivery
+CloudFront
+Fast and controlled delivery
+11. Security &amp; Permissions
+Role-based access control (RBAC).
+Album/folder-level permissions.
+Pre-signed URLs for 
+controlled downloads.
+Private S3 buckets; users should not receive permanent public S3 links.
+Authentication and session/token management.
+Audit logs for uploads, downloads, deletions, and permission changes.
+Optional IP/device/session controls for enterpr
+ise environments.
+12. Suggested Database Entities
+users
+roles
+permissions
+albums
+media
+media_metadata
+ai_tags
+ai_embeddings
+media_thumbnails
+download_logs
+activity_logs
+processing_jobs
+13. Cost Optimization Strategy
+Use S3 for original media rather than ke
+eping large media on application servers.
+Use direct-to-S3 uploads to reduce application-server bandwidth.
+Store searchable metadata outside S3 so searches do not require object listing/scanning.
+Run AI processing asynchronously and only when needed.
+Gener
+ate thumbnails once and reuse them.
+Use Redis for repeated metadata/search requests.
+Use CloudFront for frequently accessed media.
+Apply S3 lifecycle policies to move older/rarely accessed assets to suitable storage classes after evaluating retrieval requi
+rements.
+Monitor S3 requests, data transfer, AI usage, search infrastructure, and CDN usage separately.
+14. Recommended Technology Stack
+Frontend: 
+React + Vite
+UI: 
+Tailwind CSS or a custom design system
+Backend: 
+Node.js + Express
+Alternative Backend: 
+Laravel + PHP
+Database: 
+PostgreSQL or MongoDB
+Cache: 
+Redis
+Search: 
+OpenSearch
+Queue: 
+AWS SQS
+Storage: 
+AWS S3
+CDN: 
+Amazon CloudFront
+AI: 
+AWS Rekognition + AWS Bedrock
+Authentication: 
+JWT/session-based auth with RBAC
+15. Recommended Development Phases
+Phase 1: 
+System architecture, database schema, authentication, Admin/Manager/User roles
+Phase 2: 
+S3 integration, secure direct uploads, folders/albums, media library
+Phase 3: 
+Thumbnail generation, previews, download system, CloudFront integration
+Phase 4: 
+AI processing pipeline using SQS + Rekognition/Bedrock
+Phase 5: 
+Metadata search and OpenSearch integration
+Phase 6: 
+AI/natural-language and semantic search
+Phase 7: 
+Redis caching, optimization, audit logs, monitoring
+Phase 8: 
+Security testing, load testing
+, cost optimization, production deployment
+16. Final Recommended Architecture
+The final system should use AWS S3 as the durable media storage layer, while the application uses a database and OpenSearch for metadata and AI search, Redis for caching, SQS for
+ background processing, Rekognition/Bedrock for AI analysis, and CloudFront for media delivery.
+This architecture does not eliminate AWS usage, because AWS S3 remains the storage layer. Instead, it minimizes unnecessary S3 listing/search operations and kee
+ps the user experience inside the application. This is the practical approach for a 5–20 TB media platform.
+17. Album &amp; Media Classification System
+The media library should support structured albums and searchable classification fields. Every media asset c
+an be organized using country, year, city, event, festival, and custom keywords.
+Album: 
+India 2026, Delhi Events, Festivals, Corporate Events
+Country: 
+India
+Year: 
+2025, 2026
+City: 
+Delhi, Agra
+Event: 
+Conference, Exhibition, College Event, Corporate Event
+Festival: 
+Diwali, Holi, Independence Day, Republic Day
+Custom Keywords: 
+stage, crowd, speaker, monument, food, dance, ceremony
+18. AI Scan + Keyword Extraction
+When an image is uploaded, the system should automatically scan it using AI and generate searcha
+ble keywords. These keywords are stored with the media record so future searches do not require the original image to be scanned again.
+Example workflow:
+Upload image.
+Store original image securely in AWS S3.
+Create thumbnail and preview.
+Send an AI proces
+sing job through the queue.
+AI analyzes objects, scenes, visible text, people, landmarks, and visual context.
+Generate keywords and an AI description.
+Store keywords, metadata, and embeddings in the database/search index.
+Make the image searchable immediat
+ely after processing is completed.
+19. Example AI-Generated Image Keywords
+Media
+Structured Metadata
+AI Keywords
+Delhi event photo
+India / 2026 / Delhi / Event
+Delhi, India, event, people, stage, audience, conference
+Agra monument photo
+India / 2025 / 
+Agra / Tourism
+Agra, Taj Mahal, monument, architecture, tourism, India
+Festival photo
+India / 2026 / Delhi / Festival
+festival, crowd, celebration, lights, traditional clothing
+20. Search Examples
+India 2026 Delhi event
+Delhi festival photos
+Agra 2025 mo
+nument
+India event with stage and crowd
+Photos containing "India" in visible text
+Delhi photos with people and a conference stage
+2026 festival photos in Delhi
+21. Suggested Media Metadata Structure
+media_id
+file_name
+file_type
+s3_key
+album_id
+country
+year
+city
+event
+festival
+capture_date
+uploaded_by
+ai_description
+ai_keywords
+ocr_text
+detected_objects
+detected_landmarks
+embedding/vector
+thumbnail_path
+preview_path
+processing_status
+22. Album Filter &amp; Search UI
+The media dashboard should provide filters so 
+users can quickly narrow the library without opening AWS or manually browsing folders.
+Album
+Country
+Year
+City
+Event
+Festival
+Media Type: Image / Video
+AI Keyword
+Upload Date
+Uploaded By
+Example: Country = India → Year = 2026 → City = Delhi → Event = 
+Festival → Keyword = Crowd. The system returns matching media from the search index.
+23. Important Design Principle
+Album and classification data should be stored as structured metadata, while AI-generated keywords should be stored separately but indexed t
+ogether for search. This allows the system to support both exact filters (for example, City = Delhi) and intelligent searches (for example, 'Delhi festival photos with a crowd').

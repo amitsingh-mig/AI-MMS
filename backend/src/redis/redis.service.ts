@@ -12,11 +12,17 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
     this.client = new Redis({
       host,
       port,
-      retryStrategy: (times) => Math.min(times * 100, 3000),
+      lazyConnect: true,
+      enableOfflineQueue: false,
+      maxRetriesPerRequest: 1,
+      retryStrategy: (times) => (times > 2 ? null : 1000),
     });
 
-    this.client.on('connect', () => this.logger.log(`Redis connected to ${host}:${port}`));
-    this.client.on('error', (err) => this.logger.warn(`Redis connection error: ${err.message}`));
+    this.client.connect().then(() => {
+      this.logger.log(`Redis connected to ${host}:${port}`);
+    }).catch((err) => {
+      this.logger.warn(`Redis server unavailable (${err.message}). In-memory fallback will be used.`);
+    });
   }
 
   onModuleDestroy() {

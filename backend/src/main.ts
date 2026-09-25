@@ -1,11 +1,13 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe, Logger } from '@nestjs/common';
-import * as helmet from 'helmet';
+import helmet from 'helmet';
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
   const app = await NestFactory.create(AppModule);
+
+  app.use(helmet());
 
   app.setGlobalPrefix('api');
   app.enableCors({
@@ -22,8 +24,8 @@ async function bootstrap() {
   );
 
   const port = process.env.PORT || 4000;
-  await app.listen(port);
-  logger.log(`AI-MMS NestJS Backend running on port ${port}`);
+  await app.listen(port, '0.0.0.0');
+  logger.log(`AI-MMS NestJS Backend running on http://0.0.0.0:${port}`);
 }
 
 bootstrap();

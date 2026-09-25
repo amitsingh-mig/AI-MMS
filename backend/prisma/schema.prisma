@@ -95,6 +95,19 @@ model MediaAsset {
   thumbnailS3Key   String?
   previewS3Key     String?
 
+  // EXIF / Camera Metadata
+  captureDate      DateTime?        // EXIF DateTimeOriginal
+  cameraMake       String?          // e.g. "Canon", "Nikon", "Apple"
+  cameraModel      String?          // e.g. "EOS R5", "iPhone 15 Pro"
+  lensModel        String?          // e.g. "RF 24-70mm f/2.8"
+  focalLength      Float?           // in mm, e.g. 50.0
+  aperture         Float?           // f-stop, e.g. 2.8
+  shutterSpeed     String?          // e.g. "1/250"
+  iso              Int?             // e.g. 400
+  gpsLatitude      Float?
+  gpsLongitude     Float?
+  gpsAltitude      Float?
+
   processingStatus ProcessingStatus @default(PENDING)
   processingError  String?
 
@@ -105,6 +118,17 @@ model MediaAsset {
   updatedAt        DateTime         @updatedAt
 
   auditLogs        AuditLog[]
+
+  @@index([albumId])
+  @@index([country])
+  @@index([year])
+  @@index([city])
+  @@index([event])
+  @@index([festival])
+  @@index([fileType])
+  @@index([uploadedById])
+  @@index([createdAt])
+  @@index([processingStatus])
 
   @@map("media_assets")
 }

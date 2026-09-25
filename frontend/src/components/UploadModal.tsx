@@ -115,34 +115,34 @@ export default function UploadModal({ isOpen, onClose, onUploadSuccess }: Upload
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xl animate-fade-in">
-      <div className="relative w-full max-w-2xl glass-modal rounded-3xl p-6 sm:p-8 border border-gray-800 shadow-2xl space-y-6">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-md animate-fade-in">
+      <div className="relative w-full max-w-2xl bg-white rounded-3xl p-6 sm:p-8 border border-gray-200 shadow-2xl space-y-6">
         {/* Modal Header */}
-        <div className="flex items-center justify-between border-b border-gray-800 pb-4">
+        <div className="flex items-center justify-between border-b border-gray-100 pb-4">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center border border-indigo-500/20">
+            <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center border border-indigo-100">
               <UploadCloud className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-lg font-extrabold text-white">Direct S3 Browser Upload</h3>
-              <p className="text-xs text-gray-400">Upload high-res media directly to private AWS S3 bucket</p>
+              <h3 className="text-lg font-extrabold text-slate-900">Direct S3 Browser Upload</h3>
+              <p className="text-xs font-medium text-slate-500">Upload high-res media directly to private AWS S3 bucket</p>
             </div>
           </div>
-          <button onClick={onClose} className="p-2 rounded-xl text-gray-400 hover:text-white bg-gray-900 border border-gray-800">
+          <button onClick={onClose} className="p-2 rounded-xl text-slate-500 hover:text-slate-900 bg-slate-100 border border-slate-200 hover:bg-slate-200 transition">
             <X className="w-4 h-4" />
           </button>
         </div>
 
         {error && (
-          <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs flex items-center space-x-2">
-            <AlertCircle className="w-4 h-4 shrink-0" />
+          <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-bold flex items-center space-x-2">
+            <AlertCircle className="w-4 h-4 shrink-0 text-rose-600" />
             <span>{error}</span>
           </div>
         )}
 
         <form onSubmit={handleUpload} className="space-y-4">
           {/* Drag & Drop File Selector */}
-          <div className="border-2 border-dashed border-gray-800 hover:border-indigo-500/50 rounded-2xl p-6 text-center bg-gray-900/40 hover:bg-gray-900/80 transition cursor-pointer relative">
+          <div className="border-2 border-dashed border-slate-300 hover:border-amber-400 rounded-2xl p-6 text-center bg-slate-50 hover:bg-amber-50/50 transition cursor-pointer relative">
             <input
               type="file"
               onChange={handleFileChange}
@@ -150,28 +150,28 @@ export default function UploadModal({ isOpen, onClose, onUploadSuccess }: Upload
               className="absolute inset-0 opacity-0 cursor-pointer"
             />
             {file ? (
-              <div className="flex items-center justify-center space-x-2 text-indigo-300 font-semibold text-sm">
-                <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+              <div className="flex items-center justify-center space-x-2 text-slate-900 font-extrabold text-sm">
+                <CheckCircle2 className="w-5 h-5 text-emerald-600" />
                 <span>Selected: {file.name} ({(file.size / (1024 * 1024)).toFixed(1)} MB)</span>
               </div>
             ) : (
               <div className="space-y-2">
-                <UploadCloud className="w-8 h-8 text-indigo-400 mx-auto" />
-                <p className="text-sm font-semibold text-gray-200">Click or drag images & videos here</p>
-                <p className="text-xs text-gray-400">Supports RAW, JPEG, PNG, WEBP, MP4, MOV up to 10 GB</p>
+                <UploadCloud className="w-8 h-8 text-amber-500 mx-auto" />
+                <p className="text-sm font-extrabold text-slate-900">Click or drag images & videos here</p>
+                <p className="text-xs font-medium text-slate-500">Supports RAW, JPEG, PNG, WEBP, MP4, MOV up to 10 GB</p>
               </div>
             )}
           </div>
 
           {/* Title Input */}
           <div className="space-y-1">
-            <label className="text-xs font-semibold text-gray-300">Media Asset Title</label>
+            <label className="text-xs font-extrabold text-slate-700">Media Asset Title</label>
             <input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g. Delhi Festival Celebration 2026"
-              className="w-full bg-gray-900 border border-gray-800 rounded-xl px-3.5 py-2 text-xs font-medium text-gray-200 focus:outline-none focus:border-indigo-500"
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-900 placeholder-slate-400 focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-[#FFD600] transition"
               required
             />
           </div>
@@ -179,73 +179,73 @@ export default function UploadModal({ isOpen, onClose, onUploadSuccess }: Upload
           {/* Taxonomy Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-gray-300 flex items-center space-x-1">
-                <MapPin className="w-3 h-3 text-indigo-400" />
+              <label className="text-xs font-extrabold text-slate-700 flex items-center space-x-1">
+                <MapPin className="w-3 h-3 text-indigo-500" />
                 <span>Country</span>
               </label>
               <input
                 type="text"
                 value={country}
                 onChange={(e) => setCountry(e.target.value)}
-                className="w-full bg-gray-900 border border-gray-800 rounded-xl px-3 py-2 text-xs text-gray-200"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-900 focus:outline-none focus:border-amber-400"
               />
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-gray-300 flex items-center space-x-1">
-                <Calendar className="w-3 h-3 text-purple-400" />
+              <label className="text-xs font-extrabold text-slate-700 flex items-center space-x-1">
+                <Calendar className="w-3 h-3 text-purple-500" />
                 <span>Year</span>
               </label>
               <input
                 type="number"
                 value={year}
                 onChange={(e) => setYear(e.target.value)}
-                className="w-full bg-gray-900 border border-gray-800 rounded-xl px-3 py-2 text-xs text-gray-200"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-900 focus:outline-none focus:border-amber-400"
               />
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-gray-300 flex items-center space-x-1">
-                <MapPin className="w-3 h-3 text-purple-400" />
+              <label className="text-xs font-extrabold text-slate-700 flex items-center space-x-1">
+                <MapPin className="w-3 h-3 text-purple-500" />
                 <span>City</span>
               </label>
               <input
                 type="text"
                 value={city}
                 onChange={(e) => setCity(e.target.value)}
-                className="w-full bg-gray-900 border border-gray-800 rounded-xl px-3 py-2 text-xs text-gray-200"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-900 focus:outline-none focus:border-amber-400"
               />
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-gray-300 flex items-center space-x-1">
-                <Tag className="w-3 h-3 text-pink-400" />
+              <label className="text-xs font-extrabold text-slate-700 flex items-center space-x-1">
+                <Tag className="w-3 h-3 text-pink-500" />
                 <span>Event</span>
               </label>
               <input
                 type="text"
                 value={event}
                 onChange={(e) => setEvent(e.target.value)}
-                className="w-full bg-gray-900 border border-gray-800 rounded-xl px-3 py-2 text-xs text-gray-200"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-900 focus:outline-none focus:border-amber-400"
               />
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-gray-300 flex items-center space-x-1">
-                <Tag className="w-3 h-3 text-emerald-400" />
+              <label className="text-xs font-extrabold text-slate-700 flex items-center space-x-1">
+                <Tag className="w-3 h-3 text-emerald-500" />
                 <span>Festival</span>
               </label>
               <input
                 type="text"
                 value={festival}
                 onChange={(e) => setFestival(e.target.value)}
-                className="w-full bg-gray-900 border border-gray-800 rounded-xl px-3 py-2 text-xs text-gray-200"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-900 focus:outline-none focus:border-amber-400"
               />
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-gray-300 flex items-center space-x-1">
-                <Sparkles className="w-3 h-3 text-amber-400" />
+              <label className="text-xs font-extrabold text-slate-700 flex items-center space-x-1">
+                <Sparkles className="w-3 h-3 text-amber-500" />
                 <span>Custom Keywords</span>
               </label>
               <input
@@ -253,7 +253,7 @@ export default function UploadModal({ isOpen, onClose, onUploadSuccess }: Upload
                 value={customKeywords}
                 onChange={(e) => setCustomKeywords(e.target.value)}
                 placeholder="stage, crowd, speaker"
-                className="w-full bg-gray-900 border border-gray-800 rounded-xl px-3 py-2 text-xs text-gray-200"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-900 placeholder-slate-400 focus:outline-none focus:border-amber-400"
               />
             </div>
           </div>
@@ -261,13 +261,13 @@ export default function UploadModal({ isOpen, onClose, onUploadSuccess }: Upload
           {/* Progress Indicator */}
           {uploading && (
             <div className="space-y-2 pt-2">
-              <div className="flex justify-between text-xs text-indigo-300 font-semibold">
+              <div className="flex justify-between text-xs text-slate-700 font-extrabold">
                 <span>{statusMessage}</span>
                 <span>{progress}%</span>
               </div>
-              <div className="w-full h-2 bg-gray-800 rounded-full overflow-hidden">
+              <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
                 <div
-                  className="h-full bg-gradient-to-r from-indigo-500 to-pink-500 transition-all duration-300"
+                  className="h-full bg-[#FFD600] transition-all duration-300"
                   style={{ width: `${progress}%` }}
                 ></div>
               </div>
@@ -278,16 +278,16 @@ export default function UploadModal({ isOpen, onClose, onUploadSuccess }: Upload
           <button
             type="submit"
             disabled={uploading || !file}
-            className="w-full flex items-center justify-center space-x-2 py-3 rounded-2xl bg-gradient-to-r from-indigo-500 via-purple-600 to-pink-500 hover:from-indigo-600 hover:to-pink-600 text-white font-bold text-sm shadow-glow transition disabled:opacity-50"
+            className="w-full flex items-center justify-center space-x-2 py-3.5 rounded-2xl bg-[#FFD600] hover:bg-yellow-400 text-slate-950 font-extrabold text-sm shadow-sm transition disabled:opacity-50"
           >
             {uploading ? (
               <>
-                <Loader2 className="w-4 h-4 animate-spin" />
+                <Loader2 className="w-4 h-4 animate-spin text-slate-950" />
                 <span>Uploading directly to S3...</span>
               </>
             ) : (
               <>
-                <UploadCloud className="w-4 h-4" />
+                <UploadCloud className="w-4 h-4 text-slate-950" />
                 <span>Start Direct S3 Upload</span>
               </>
             )}
@@ -297,3 +297,4 @@ export default function UploadModal({ isOpen, onClose, onUploadSuccess }: Upload
     </div>
   );
 }
+

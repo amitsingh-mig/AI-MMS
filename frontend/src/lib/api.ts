@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api',
+  timeout: 30000,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -48,6 +49,19 @@ export interface MediaAsset {
   previewUrl?: string;
   processingStatus: 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'FAILED';
   createdAt: string;
+
+  // EXIF Fields
+  captureDate?: string | null;
+  cameraMake?: string | null;
+  cameraModel?: string | null;
+  lensModel?: string | null;
+  focalLength?: number | null;
+  aperture?: number | null;
+  shutterSpeed?: string | null;
+  iso?: number | null;
+  gpsLatitude?: number | null;
+  gpsLongitude?: number | null;
+  gpsAltitude?: number | null;
 }
 
 export interface User {
